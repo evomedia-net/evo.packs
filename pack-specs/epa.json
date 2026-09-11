@@ -1,0 +1,21 @@
+{
+  "pack_id": "epa",
+  "kind": "meta",
+  "title": "EPA - EHS guidance by topic",
+  "publisher": "U.S. Environmental Protection Agency",
+  "rights_tier": "public-domain",
+  "rights_note": "U.S. federal government works, 17 U.S.C. 105.",
+  "members_from": {
+    "corpus": "EPA",
+    "split_by": "section",
+    "member_id": "epa-{section}",
+    "exclude_sections": []
+  },
+  "recommends": ["dot-hazmat"],
+  "refresh": {
+    "method": "harvest",
+    "cadence_days": 90,
+    "note": "EPA relocates PDFs. Re-run the link harvest over the topic pages; a download-only check silently misses moved and newly-linked documents. Expensive - flag for manual run, do not auto-schedule."
+  },
+  "description": "One member per EPA topic section (epa-lead, epa-rmp, epa-rcra, ...), individually installable. The meta-pack installs all of them. Spreadsheets are never embedded: 321 XLSX files were 28% of all EPA text and are monitoring dumps, not prose."
+}

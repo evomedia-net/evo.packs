@@ -1,0 +1,17 @@
+{
+  "pack_id": "dot-hazmat",
+  "kind": "content",
+  "title": "49 CFR 171-180 - Hazardous Materials Regulations (DOT/PHMSA)",
+  "corpus": "CFR-49",
+  "publisher": "U.S. Government Publishing Office / eCFR",
+  "rights_tier": "public-domain",
+  "rights_note": "U.S. federal government works, 17 U.S.C. 105.",
+  "refresh": {
+    "method": "api_date",
+    "cadence_days": 30,
+    "endpoint": "https://www.ecfr.gov/api/versioner/v1/titles.json",
+    "title": 49,
+    "field": "up_to_date_as_of"
+  },
+  "description": "The third regulator. OSHA governs a chemical in the workplace, EPA released or disposed, DOT in transit. Hazmat questions surface in all three contexts, which is why this is standalone and recommended by both meta-packs rather than a member of either - a member of both would double-install and misattribute the publisher. Part 172 holds the Hazardous Materials Table and the hazmat-employee training rules that overlap OSHA HazCom training."
+}

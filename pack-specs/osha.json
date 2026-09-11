@@ -1,0 +1,16 @@
+{
+  "pack_id": "osha",
+  "kind": "meta",
+  "title": "OSHA - regulations, interpretations, enforcement, and guidance",
+  "publisher": "U.S. Occupational Safety and Health Administration / eCFR",
+  "rights_tier": "public-domain",
+  "rights_note": "U.S. federal government works, 17 U.S.C. 105. No restriction on reproduction, redistribution, or commercial use.",
+  "members": ["cfr-29", "osha-interpretations", "osha-directives", "osha-publications"],
+  "required_members": ["cfr-29"],
+  "recommends": ["dot-hazmat"],
+  "refresh": {
+    "cadence_days": 90,
+    "note": "Checked per member: cfr-29 by eCFR api_date; interpretations and publications by URL-set diff; directives by new_identifier - a revised CPL lands under a NEW number, so a hash diff finds nothing."
+  },
+  "description": "Four layers of one regulatory system, joined on the standard number. cfr-29 is what the rule requires; interpretations are what OSHA says it means; directives are how inspectors enforce it; publications are how to comply. cfr-29 is required because the other three cite it - without it they reference a rule that is not in the corpus."
+}

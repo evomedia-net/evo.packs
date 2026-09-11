@@ -1,0 +1,16 @@
+{
+  "pack_id": "nfpa-public",
+  "kind": "content",
+  "title": "NFPA - free public-education and research documents",
+  "corpus": "NFPA-Public",
+  "publisher": "National Fire Protection Association",
+  "rights_tier": "free-redistribution",
+  "rights_note": "NFPA copyright. Published free and intended for redistribution (safety tip sheets exist to be printed and handed out; FPRF research is open access). Attribute NFPA. Do not resell as our own content.",
+  "refresh": {
+    "method": "manifest_hash",
+    "cadence_days": 90,
+    "extra_check_month": 9,
+    "note": "Tip sheets refresh around Fire Prevention Week (October); FPRF publishes continuously."
+  },
+  "description": "737 documents: safety tip sheets, lesson plans, fact sheets, checklists (English and Spanish), and Fire Protection Research Foundation + NFPA Research reports. NFPA's licensed standards (nfpa-ibr) are deliberately NOT a pack and are out of scope."
+}
