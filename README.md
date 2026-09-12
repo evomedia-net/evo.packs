@@ -125,10 +125,49 @@ evopacks/
   check/          freshness
   cli.py
 pack-specs/       one JSON per pack
+ragf/             retrieval smoke-test cases for evo.ragframework
 tests/            pure-function tests; no network
 state/            per-run state (gitignored)
 dist/             built artifacts (gitignored; published as GitHub Releases)
 ```
+
+## Does the corpus actually retrieve?
+
+Everything above measures *collection* quality — what was downloaded, what has
+a text layer, what is duplicated. None of it measures whether a question gets
+the right document back.
+
+`ragf/corpus-smoke.jsonl` is 18 cases for
+[evo.ragframework](https://github.com/evomedia-net/evo.ragframework), each a
+question a real EHS user would ask, with a fact that is verifiably in the
+corpus:
+
+```bash
+ragf validate ragf/corpus-smoke.jsonl
+ragf run --adapter evoai --url http://localhost:8005 --token "$RAGF_TOKEN" \
+         --tenant <tenant-uuid> --cases ragf/corpus-smoke.jsonl \
+         --db results.db --label "packs v0.0.0.1.0"
+```
+
+The cases are chosen to fail loudly rather than quietly:
+
+- **Facts, not vibes** — "10 working days" for the hepatitis B vaccine, "6 feet"
+  for construction fall protection, "172.101" for the Hazardous Materials
+  Table. A regex either finds it or it doesn't.
+- **One case per corpus layer**, so a failure says *which* pack is not
+  retrieving: rule text (`cfr-29`), interpretation letters, enforcement
+  directives, EPA guidance, DOT hazmat, NFPA.
+- **`interp-archived-flagged` is the important one.** It asks about a 1976
+  interpretation and passes only if the answer signals the letter is archived
+  and may no longer represent OSHA policy. 27% of the letters carry that
+  notice; presenting one as current guidance is this corpus's main way of
+  being confidently wrong.
+- **`control-off-topic-gated`** asks the capital of France and expects a
+  refusal — a corpus this large must not make the assistant bluff.
+
+Run it against a tenant with the packs installed, before and after, and diff
+with `ragf compare`. A pack changes retrieval for every existing question on
+that tenant, so it can regress answers that work today.
 
 ## Versioning
 
