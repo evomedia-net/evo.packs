@@ -189,3 +189,16 @@ Five segments, v{major}.{rc}.{beta}.{alpha}.{build} - version.json is
 authoritative. Currently alpha. Pack artifact versions are separate and
 date-stamped from the corpus capture (2026.08.31): a pack version names what
 shipped, so two builds from one capture share a version.
+
+Licence
+-------
+
+MIT - see LICENSE.
+
+That covers this pipeline. It does not cover the corpora it fetches: each
+pack carries its own rights_tier and ships it in every manifest -
+public-domain for the US federal material (EPA, OSHA, CFR, 17 U.S.C. 105)
+and free-redistribution for the NFPA public documents, which are NFPA
+copyright, published free for redistribution with attribution and not for
+resale. NFPA's licensed incorporated-by-reference standards are not
+distributed here at all.
