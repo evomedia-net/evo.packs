@@ -3,7 +3,7 @@ name = "evopacks"
 # Mirrors version.json, which is the stamp the tooling reads. PEP 621 wants a
 # PEP 440 version here; version.json (five-segment) stays authoritative.
 version = "0.0.0.1"
-description = "Build, catalog, and freshness-check regulatory content packs for evo.ai"
+description = "Build, catalog, and freshness-check content packs for evo.ai"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
