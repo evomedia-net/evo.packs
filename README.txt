@@ -1,11 +1,17 @@
 evo.packs
 =========
 
-Build, catalog, and freshness-check content packs for evo.ai - curated
-regulatory corpora (OSHA, EPA, DOT hazmat, NFPA public material) that an
-evo.ehs customer can install into Ask AI in one action. The pack system on the
-evo.ai side is designed in
+Build, catalog, and freshness-check content packs for evo.ai - a corpus
+turned into an artifact a customer installs into Ask AI in one action. The pack
+system on the evo.ai side is designed in
 evomedia-net/evo.ai#191 (https://github.com/evomedia-net/evo.ai/issues/191).
+
+A pack is not tied to a subject or a file type. The packs built so far are
+regulatory - OSHA, EPA, DOT hazmat and NFPA public material - because that is
+what an air-gapped evo.ehs needs in order to answer a question that is not
+about the customer's own records. Nothing in the pipeline below assumes that:
+collect, extract, ocr, index, build and catalog care about documents, not about
+what the documents are.
 
 This repo is the pipeline from publisher website to installable artifact. The
 corpus it produces (~33 GB of source documents) never enters git - it lives
