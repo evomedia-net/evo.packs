@@ -102,6 +102,69 @@ def _write_tar(dest: Path, manifest: dict, files: list[dict]) -> str:
     return sha
 
 
+#: Members of a meta pack are whole corpora, not topic slugs, so they get
+#: written names rather than something derived from an id.
+MEMBER_TITLES = {
+    "cfr-29": "29 CFR - Occupational Safety and Health Standards",
+    "osha-interpretations": "OSHA - Letters of Interpretation",
+    "osha-directives": "OSHA - Enforcement Directives (CPL)",
+    "osha-publications": "OSHA - Publications and Guidance",
+}
+
+
+#: Sections whose slug cannot be derived into a good name: EPA runs some
+#: words together ("greenchemistry"), repeats the acronym it already spelled
+#: out ("indoor-air-quality-iaq"), or uses a path so long it reads as a
+#: sentence. Written out here rather than bent into the general rule.
+SECTION_TITLES = {
+    "emergencies-iaq": "Emergencies - Indoor Air Quality",
+    "greenchemistry": "Green Chemistry",
+    "greenercleanups": "Greener Cleanups",
+    "hw-sw846": "Hazardous Waste - SW-846 Test Methods",
+    "indoor-air-quality-iaq": "Indoor Air Quality",
+    "indoorairplus": "Indoor airPLUS",
+    "reviewing-new-chemicals-under-toxic-substances-control-act-tsca":
+        "Reviewing New Chemicals under TSCA",
+    "safepestcontrol": "Safe Pest Control",
+    "toxics-release-inventory-tri-program": "Toxics Release Inventory (TRI)",
+}
+
+
+#: Tokens that are acronyms, statute numbers or proper nouns, and so must not
+#: be title-cased into "Tsca" / "Pcbs" / "Sw846". Keyed lower-case; the value
+#: is exactly how it should read.
+_NAME_TOKENS = {
+    "aegl": "AEGL", "cfr": "CFR", "epa": "EPA", "epcra": "EPCRA",
+    "ghg": "GHG", "hw": "Hazardous waste", "iaq": "IAQ",
+    "msgp": "MSGP", "nfpa": "NFPA", "npdes": "NPDES", "nsr": "NSR",
+    "osha": "OSHA", "pbt": "PBT", "pcbs": "PCBs", "pfas": "PFAS",
+    "rcra": "RCRA", "rmp": "RMP", "spcc": "SPCC", "sw846": "SW-846",
+    "tri": "TRI", "tsca": "TSCA", "ust": "UST", "uv": "UV",
+    "voc": "VOC", "and": "and", "for": "for", "of": "of", "the": "the",
+    "under": "under", "in": "in", "to": "to",
+}
+
+
+def human_name(slug: str) -> str:
+    """A slug as a person would write it, via SECTION_TITLES or the general rule.
+
+    Small words stay lower-case unless they lead, which is ordinary title
+    style and keeps "Assessing and Managing Chemicals under TSCA" readable.
+    """
+    if slug in SECTION_TITLES:
+        return SECTION_TITLES[slug]
+    parts = [p for p in slug.replace("_", "-").split("-") if p]
+    out = []
+    for i, p in enumerate(parts):
+        word = _NAME_TOKENS.get(p.lower())
+        if word is None:
+            word = p.capitalize()
+        elif i == 0 and word.islower():
+            word = word.capitalize()
+        out.append(word)
+    return " ".join(out)
+
+
 def build_content(pack_id: str, spec: dict, root: Path, dist: Path, version: str,
                   captured: str, corpus: str, section: str | None = None,
                   title: str | None = None) -> dict:
@@ -170,8 +233,11 @@ def build_all(root: Path | None = None, dist: Path | None = None, only: str | No
                 if s in mf.get("exclude_sections", []):
                     continue
                 mid = mf["member_id"].format(section=s)
+                # The section as a NAME, not the URL slug EPA happens to use.
                 results.append(build_content(mid, spec, root, dist, ver, cap, mf["corpus"], s,
-                                             title=f"{spec['title']} - {s}"))
+                                             title=f"{spec['short_title']} - {human_name(s)}"
+                                             if spec.get("short_title")
+                                             else f"{spec['title']} - {human_name(s)}"))
                 members.append(mid)
         else:
             # each member is versioned from ITS OWN capture; the meta-pack takes
@@ -181,7 +247,9 @@ def build_all(root: Path | None = None, dist: Path | None = None, only: str | No
                 corpus = CORPUS_OF[mid]
                 mcap = captured_at(root, corpus, captured)
                 caps.append(mcap)
-                sub = {**spec, "title": mid}
+                # title = mid shipped four packs whose only name was their
+                # own identifier ("osha-interpretations", "cfr-29").
+                sub = {**spec, "title": MEMBER_TITLES.get(mid, human_name(mid))}
                 results.append(build_content(mid, sub, root, dist,
                                              version or mcap.replace("-", "."), mcap, corpus))
                 members.append(mid)
