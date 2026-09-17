@@ -2,6 +2,8 @@
   "pack_id": "epa",
   "kind": "meta",
   "title": "EPA - EHS guidance by topic",
+  "_short_title": "the prefix each MEMBER pack is named with. The meta pack keeps the long title, which describes the bundle; a member is one topic and repeating 'EHS guidance by topic' in all 41 names buries the topic itself.",
+  "short_title": "EPA",
   "publisher": "U.S. Environmental Protection Agency",
   "rights_tier": "public-domain",
   "rights_note": "U.S. federal government works, 17 U.S.C. 105.",
