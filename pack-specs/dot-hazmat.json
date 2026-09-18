@@ -13,5 +13,53 @@
     "title": 49,
     "field": "up_to_date_as_of"
   },
-  "description": "The third regulator. OSHA governs a chemical in the workplace, EPA released or disposed, DOT in transit. Hazmat questions surface in all three contexts, which is why this is standalone and recommended by both meta-packs rather than a member of either - a member of both would double-install and misattribute the publisher. Part 172 holds the Hazardous Materials Table and the hazmat-employee training rules that overlap OSHA HazCom training."
+  "description": "The third regulator. OSHA governs a chemical in the workplace, EPA released or disposed, DOT in transit. Hazmat questions surface in all three contexts, which is why this is standalone and recommended by both meta-packs rather than a member of either - a member of both would double-install and misattribute the publisher. Part 172 holds the Hazardous Materials Table and the hazmat-employee training rules that overlap OSHA HazCom training.",
+  "query_expansion": {
+    "transfer": [
+      "transporting",
+      "carriage by public highway",
+      "loading and unloading",
+      "motor vehicle"
+    ],
+    "move": [
+      "transporting",
+      "carriage by public highway",
+      "loading and unloading",
+      "motor vehicle"
+    ],
+    "moving": [
+      "transporting",
+      "carriage by public highway",
+      "loading and unloading",
+      "motor vehicle"
+    ],
+    "ship": [
+      "offered for transportation",
+      "carriage by public highway",
+      "motor vehicle"
+    ],
+    "shipping": [
+      "offered for transportation",
+      "carriage by public highway",
+      "motor vehicle"
+    ],
+    "haul": [
+      "carriage by public highway",
+      "loading and unloading",
+      "motor vehicle"
+    ],
+    "carry": [
+      "carriage by public highway",
+      "motor vehicle"
+    ],
+    "nitroglycerin": [
+      "Class 1 explosive materials"
+    ],
+    "dynamite": [
+      "Class 1 explosive materials"
+    ],
+    "explosives": [
+      "Class 1 explosive materials"
+    ]
+  }
 }

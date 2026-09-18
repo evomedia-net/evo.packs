@@ -177,6 +177,13 @@ def build_content(pack_id: str, spec: dict, root: Path, dist: Path, version: str
         "rights_tier": spec["rights_tier"], "rights_note": spec.get("rights_note", ""),
         "corpus": corpus, "section": section, "captured_at": captured,
         "refresh": spec.get("refresh", {}),
+        # Lay -> domain vocabulary for THIS corpus, applied by evo-ai to this
+        # pack's retrieval leg only (evo.ai#209). It ships inside the artifact
+        # because it describes the corpus, not the deployment: a reader asking
+        # "how do I transfer nitroglycerin" gets nothing from a corpus that
+        # says "carriage by public highway", and the deployment cannot know
+        # that without reading the regulations.
+        "query_expansion": spec.get("query_expansion", {}),
         "doc_count": len(files), "text_bytes": sum(f["chars"] for f in files),
         "files": [{k: v for k, v in f.items() if k != "text_file"} for f in files],
     }
