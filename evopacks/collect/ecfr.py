@@ -88,7 +88,90 @@ def sort_key(section: str):
     return tuple(key)
 
 
+def _flatten(s: str) -> str:
+    """Tag soup to one clean line."""
+    s = re.sub(r"<[^>]+>", " ", s)
+    s = html.unescape(s).replace("\xa0", " ")
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _column_label(raw: str) -> str:
+    """A <TH> as a prefix worth repeating on every row of the column.
+
+    Drops the column NUMBER ("(8)") and the cross-references and letter tags
+    that only make sense while looking at the printed grid ("(\u00a7 172.102)",
+    "(8A)"): they are identical on every row, so they cost tokens in every
+    chunk and tell a reader nothing the label has not already said.
+    """
+    t = _flatten(raw)
+    t = re.sub(r"^\(\d+\)\s*", "", t)                 # leading column number
+    t = re.sub(r"\s*\((?:see\s+)?\u00a7+[^)]*\)", "", t)   # (\u00a7 172.102), (see \u00a7\u00a7 173.27 ...)
+    t = re.sub(r"\s*\(\d+[A-Z]\)", "", t)              # (8A), (9B), (10A)
+    return t.strip(" .")
+
+
+def _header_labels(thead: str) -> list[str]:
+    """One label per BODY column, expanding the two-tier header.
+
+    A <TH rowspan="2"> spans both header rows and labels one column on its
+    own; a <TH colspan="n"> is a group whose n sub-headers live in the second
+    row, and each of those columns is labelled "Group - Sub" so a cell keeps
+    both halves of its meaning ("Packaging - Non-bulk").
+    """
+    rows = re.findall(r"<TR[^>]*>(.*?)</TR>", thead, re.S)
+    if not rows:
+        return []
+    top = re.findall(r"<TH([^>]*)>(.*?)</TH>", rows[0], re.S)
+    sub = ([_column_label(c) for c in re.findall(r"<TH[^>]*>(.*?)</TH>", rows[1], re.S)]
+           if len(rows) > 1 else [])
+    labels: list[str] = []
+    si = 0
+    for attrs, text in top:
+        m = re.search(r'colspan="(\d+)"', attrs, re.I)
+        span = int(m.group(1)) if m else 1
+        base = _column_label(text)
+        if span == 1:
+            labels.append(base)
+            continue
+        for _ in range(span):
+            s2 = sub[si] if si < len(sub) else ""
+            si += 1
+            labels.append(f"{base} - {s2}" if s2 else base)
+    return labels
+
+
+def _render_table(tbl: str) -> str:
+    """One line per row, every value carrying its column name.
+
+    Empty cells are dropped rather than rendered as "Label:" with nothing
+    after it - the Hazardous Materials Table is mostly empty cells, and a
+    row of bare labels is noise that matches every query equally.
+    """
+    thead = re.search(r"<THEAD[^>]*>(.*?)</THEAD>", tbl, re.S)
+    labels = _header_labels(thead.group(1)) if thead else []
+    body = re.search(r"<TBODY[^>]*>(.*?)</TBODY>", tbl, re.S)
+    scope = body.group(1) if body else re.sub(r"<THEAD[^>]*>.*?</THEAD>", "", tbl, flags=re.S)
+    out = []
+    for rh in re.findall(r"<TR[^>]*>(.*?)</TR>", scope, re.S):
+        cells = [_flatten(c) for c in re.findall(r"<T[DH][^>]*>(.*?)</T[DH]>", rh, re.S)]
+        parts = []
+        for i, v in enumerate(cells):
+            if not v:
+                continue
+            lab = labels[i] if i < len(labels) else ""
+            parts.append(f"{lab}: {v}" if lab else v)
+        if parts:
+            out.append(" | ".join(parts))
+    return "\n".join(out)
+
+
 def to_text(xml: str) -> str:
+    # Tables first, and removed from the stream once rendered: their markup is
+    # HTML (<TR>/<TD>), not the CFR <ROW>/<ENT> the rules below know, so left
+    # in place every table tag would fall through to the catch-all and the
+    # grid would arrive as an unlabelled run of cell values (evo.packs#7).
+    xml = re.sub(r"<TABLE[^>]*>.*?</TABLE>",
+                 lambda m: "\n" + _render_table(m.group(0)) + "\n", xml, flags=re.S)
     t = re.sub(r"<(SECTNO|SUBJECT|HEAD)>(.*?)</\1>", r"\2\n", xml, flags=re.S)
     t = re.sub(r"</(P|HED|HD\d?|FP|DIV\d|ROW)>", "\n", t)
     t = re.sub(r"</(ENT|CELL)>", " | ", t)
