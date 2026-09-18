@@ -148,7 +148,14 @@ class Extractor:
         if ext in SKIP_EXT:
             self._record(src, "skip", 0, f"{ext} not text-extractable here")
             return
-        if dst.exists() and dst.stat().st_size > 0:
+        # Existence alone is not currency (evo.packs#7). This skipped any file
+        # whose mirror merely EXISTED, so re-collecting a corpus never reached
+        # _TEXT and `build` packaged the previous capture while reporting a new
+        # version - a rebuild that looks done and ships the old text. Caught
+        # rebuilding 49 CFR: the corpus grew from 522 KB to 1.7 MB and the pack
+        # came out byte-identical. Re-extract when the source is newer.
+        if (dst.exists() and dst.stat().st_size > 0
+                and dst.stat().st_mtime >= src.stat().st_mtime):
             with self.lock:
                 self.stats["already"] += 1
             self._record(src, "ok", len(dst.read_text(encoding="utf-8", errors="replace")),
