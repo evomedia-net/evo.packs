@@ -6,6 +6,9 @@
     evopacks index                   dedupe/exclusion index + MASTER-INDEX.csv
     evopacks build   [--only PACK]   dist/<pack>-<version>.tar.zst per pack-spec
     evopacks catalog [--release-base URL]   packs.json from dist/
+    evopacks sign    [--key PATH]    packs.json.sig, so a sealed deployment can trust it
+    evopacks verify  FOLDER          signature + every artifact, before it is carried in
+    evopacks keygen  --out PATH      mint the signing key (once; outside every repo)
     evopacks check   [PACK|--due] [--run-harvest]   source freshness, report only
     evopacks status                  what is on disk, what is stale
 
@@ -83,6 +86,38 @@ def cmd_catalog(a: argparse.Namespace) -> None:
     _say(build(dist=Path(a.dist), out=Path(a.out), release_base=a.release_base))
 
 
+def cmd_keygen(a: argparse.Namespace) -> None:
+    from .build import sign
+    try:
+        _say(sign.keygen(Path(a.out)))
+    except sign.SignatureError as e:
+        sys.exit(str(e))
+
+
+def cmd_sign(a: argparse.Namespace) -> None:
+    import os
+    from .build import sign
+    key = a.key or os.environ.get("EVOPACKS_SIGNING_KEY", "")
+    if not key:
+        sys.exit("sign needs --key or $EVOPACKS_SIGNING_KEY: the path to the private key")
+    _say(sign.sign(Path(a.catalog), Path(key)))
+
+
+def cmd_verify(a: argparse.Namespace) -> None:
+    import os
+    from .build import sign
+    pub = a.public_key or os.environ.get("EVOPACKS_PUBLIC_KEY", "")
+    if not pub:
+        sys.exit("verify needs --public-key or $EVOPACKS_PUBLIC_KEY")
+    try:
+        out = sign.verify_folder(Path(a.folder), pub)
+    except sign.SignatureError as e:
+        sys.exit(str(e))
+    _say(out)
+    if out["mismatched"]:
+        sys.exit(f"{len(out['mismatched'])} artifact(s) do not match packs.json")
+
+
 def cmd_check(a: argparse.Namespace) -> None:
     from .check.freshness import check_pack, due
     packs = due() if a.due else ([a.pack] if a.pack else [])
@@ -123,6 +158,11 @@ def main(argv: list[str] | None = None) -> None:
     p = sub.add_parser("catalog"); p.add_argument("--dist", default="dist")
     p.add_argument("--out", default="packs.json"); p.add_argument("--release-base", default="")
     p.set_defaults(fn=cmd_catalog)
+    p = sub.add_parser("sign"); p.add_argument("--catalog", default="packs.json")
+    p.add_argument("--key"); p.set_defaults(fn=cmd_sign)
+    p = sub.add_parser("verify"); p.add_argument("folder")
+    p.add_argument("--public-key"); p.set_defaults(fn=cmd_verify)
+    p = sub.add_parser("keygen"); p.add_argument("--out", required=True); p.set_defaults(fn=cmd_keygen)
     p = sub.add_parser("check"); p.add_argument("pack", nargs="?"); p.add_argument("--due", action="store_true")
     p.add_argument("--run-harvest", action="store_true"); p.set_defaults(fn=cmd_check)
     p = sub.add_parser("status"); p.set_defaults(fn=cmd_status)
