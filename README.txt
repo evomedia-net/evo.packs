@@ -50,6 +50,7 @@ Quickstart
     evopacks index
     evopacks build
     evopacks catalog --release-base https://github.com/evomedia-net/evo.packs/releases/download/v0.0.0.1.0
+    evopacks sign --key <path>/evopacks-signing.pem   # packs.json.sig - see Signing below
     evopacks check --due
     evopacks status
 
@@ -121,6 +122,50 @@ evopacks check runs the method each pack declares and reports only:
 | new_identifier | osha-directives | A revised CPL lands under a new number; hash diff finds nothing |
 | harvest | epa | EPA relocates PDFs; only a re-harvest sees it. Manual (--run-harvest) |
 
+Signing, and carrying packs to a sealed deployment
+--------------------------------------------------
+
+A deployment with no route to the internet cannot fetch the catalog or an
+artifact. Its operator copies the files of a release instead - packs.json,
+packs.json.sig and the .tar.zst artifacts - into the evo.ai pack folder,
+by whatever the site uses to carry files in: a scanned USB stick, write-once
+media, a data diode
+(evo.ai#242 (https://github.com/evomedia-net/evo.ai/issues/242)). The folder
+may hold a subset; a pack is installable when its artifact is there.
+
+The sha256 in packs.json proves each artifact matches the catalog beside it.
+It cannot prove the catalog came from this pipeline, because the catalog and
+the artifacts travel together. The signature does: an Ed25519 signature over
+the exact bytes of packs.json, checked by evo.ai against the public key it
+pins in EVOPACKS_PUBLIC_KEY. Trust runs signature → catalog → each artifact's
+sha256 → the manifest inside.
+
+    evopacks keygen --out <path outside every repo>/evopacks-signing.pem   # once, ever
+    evopacks catalog --release-base https://github.com/evomedia-net/evo.packs/releases/download/<tag>
+    evopacks sign --key <path>/evopacks-signing.pem                        # writes packs.json.sig
+    gh release upload <tag> packs.json packs.json.sig dist/*.tar.zst
+
+Before carrying a folder in, check it where it was copied:
+
+    evopacks verify <folder> --public-key <base64 public key>
+
+It checks the signature, then every artifact present against its sha256, and
+exits non-zero on a bad signature or a mismatched artifact. A pack whose
+artifact is absent is reported, not failed.
+
+- Format. packs.json.sig is the base64 of the 64-byte raw signature, on
+  one line. The public key is the base64 of its 32 raw bytes - the string a
+  deployment sets EVOPACKS_PUBLIC_KEY to. Re-running catalog after sign
+  invalidates the signature; sign last. A known-answer test in this repo and
+  in evo.ai pins the format, so neither side can drift from the other.
+- The private key is a PKCS#8 PEM file that lives outside every repository
+  and is backed up out of band. keygen refuses to write inside a git working
+  tree, and refuses to overwrite an existing key. Losing the key means minting
+  a new one and re-pinning every deployment; leaking it means anyone can sign a
+  catalog.
+- Freshness checks need the publishers' sites, so for a sealed deployment
+  evopacks check runs where the folder is built, not on the box.
+
 Layout
 ------
 
@@ -130,10 +175,11 @@ Layout
       collect/        ecfr, osha, osha_publications, epa, nfpa_public
       extract/        text (pdftotext/html/docx/xlsx), ocr (pymupdf+tesseract)
       index/          dedupe (embed index), master (MASTER-INDEX.csv)
-      build/          pack (tar.zst + manifest.json), catalog (packs.json)
+      build/          pack (tar.zst + manifest.json), catalog (packs.json), sign (packs.json.sig)
       check/          freshness
       cli.py
     pack-specs/       one JSON per pack
+    scripts/          md_txt.py: README.txt from README.md (the suite checks it)
     ragf/             retrieval smoke-test cases for evo.ragframework
     tests/            pure-function tests; no network
     state/            per-run state (gitignored)
