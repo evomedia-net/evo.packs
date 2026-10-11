@@ -136,6 +136,17 @@ the exact bytes of `packs.json`, checked by evo.ai against the public key it
 pins in `EVOPACKS_PUBLIC_KEY`. Trust runs signature → catalog → each artifact's
 sha256 → the manifest inside.
 
+**The release signing key's public half** — what a deployment pins, and what
+`verify` checks against:
+
+```
+EVOPACKS_PUBLIC_KEY=FVcZNsJneDI093x+9M04gyTrlTYh+2tYn0GQCpD/dGA=
+```
+
+Releases from `v0.0.0.1.1` on carry `packs.json.sig` (that release was signed
+after it was published; its `packs.json` is byte-for-byte the one it shipped
+with). A signature by any other key is refused.
+
 ```bash
 evopacks keygen --out <path outside every repo>/evopacks-signing.pem   # once, ever
 evopacks catalog --release-base https://github.com/evomedia-net/evo.packs/releases/download/<tag>
