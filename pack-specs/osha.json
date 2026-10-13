@@ -12,5 +12,26 @@
     "cadence_days": 90,
     "note": "Checked per member: cfr-29 by eCFR api_date; interpretations and publications by URL-set diff; directives by new_identifier - a revised CPL lands under a NEW number, so a hash diff finds nothing."
   },
-  "description": "Four layers of one regulatory system, joined on the standard number. cfr-29 is what the rule requires; interpretations are what OSHA says it means; directives are how inspectors enforce it; publications are how to comply. cfr-29 is required because the other three cite it - without it they reference a rule that is not in the corpus."
+  "description": "Four layers of one regulatory system, joined on the standard number. cfr-29 is what the rule requires; interpretations are what OSHA says it means; directives are how inspectors enforce it; publications are how to comply. cfr-29 is required because the other three cite it - without it they reference a rule that is not in the corpus.",
+  "query_expansion": {
+    "hazwoper": ["hazardous waste operations and emergency response", "1910.120"],
+    "retrained": ["refresher training"],
+    "retraining": ["refresher training"],
+    "retrain": ["refresher training"],
+    "loto": ["lockout/tagout", "control of hazardous energy", "1910.147"],
+    "lockout": ["control of hazardous energy", "1910.147"],
+    "hazcom": ["hazard communication", "1910.1200"],
+    "psm": ["process safety management of highly hazardous chemicals", "1910.119"],
+    "ppe": ["personal protective equipment"],
+    "sds": ["safety data sheet"],
+    "msds": ["safety data sheet"],
+    "pel": ["permissible exposure limit"],
+    "pels": ["permissible exposure limit"],
+    "forklift": ["powered industrial truck", "1910.178"],
+    "forklifts": ["powered industrial truck", "1910.178"],
+    "confined space": ["permit-required confined space", "1910.146"],
+    "confined spaces": ["permit-required confined space", "1910.146"],
+    "respirator": ["respiratory protection", "1910.134"],
+    "respirators": ["respiratory protection", "1910.134"]
+  }
 }
