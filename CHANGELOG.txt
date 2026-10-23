@@ -1,0 +1,61 @@
+Changelog
+=========
+
+Notable changes to evo.packs, newest first. Each entry links the pull request that made it.
+
+Versions have five parts, v{major}.{rc}.{beta}.{alpha}.{build}, and the build number
+advances once per release. New changes go under Unreleased in the same pull request,
+and the release moves them under its version.
+
+Unreleased
+----------
+
+Added
+-----
+
+- sign: packs.json is signed and a folder can be verified, so a server with no network can tell a
+  release from a copy (#10 (https://github.com/evomedia-net/evo.packs/pull/10))
+- dot-hazmat: the pack ships the vocabulary 49 CFR is written in, so a plain question reaches the
+  right sections (#9 (https://github.com/evomedia-net/evo.packs/pull/9))
+
+Fixed
+-----
+
+- osha: the OSHA packs ship the vocabulary their corpus is written in - HAZWOPER, retrained, LOTO,
+  HazCom and more (#13 (https://github.com/evomedia-net/evo.packs/pull/13))
+- ecfr: CFR tables keep their rows and their column names (#8
+  (https://github.com/evomedia-net/evo.packs/pull/8))
+
+Documentation
+-------------
+
+- sign: publish the release signing key's public half, so a deployment knows what to pin (#11
+  (https://github.com/evomedia-net/evo.packs/pull/11))
+- a pack is not a regulatory format (#6 (https://github.com/evomedia-net/evo.packs/pull/6))
+
+v0.0.0.1.1 - 2026-09-16
+-----------------------
+
+Fixed
+-----
+
+- specs: EPA member packs are named for their topic, not the bundle (#4
+  (https://github.com/evomedia-net/evo.packs/pull/4))
+- build: packs get names a person can read, not slugs and ids (#3
+  (https://github.com/evomedia-net/evo.packs/pull/3))
+
+Maintenance
+-----------
+
+- MIT licence, and say what it does not cover (#2
+  (https://github.com/evomedia-net/evo.packs/pull/2))
+- ragf: add 18 corpus retrieval smoke-test cases (#1
+  (https://github.com/evomedia-net/evo.packs/pull/1))
+
+v0.0.0.1.0 - 2026-09-11
+-----------------------
+
+Added
+-----
+
+- corpus pipeline, pack builder, catalog, and freshness checker
