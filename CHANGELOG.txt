@@ -11,7 +11,7 @@ Unreleased
 ----------
 
 Added
------
+~~~~~
 
 - sign: packs.json is signed and a folder can be verified, so a server with no network can tell a
   release from a copy (#10 (https://github.com/evomedia-net/evo.packs/pull/10))
@@ -19,7 +19,7 @@ Added
   right sections (#9 (https://github.com/evomedia-net/evo.packs/pull/9))
 
 Fixed
------
+~~~~~
 
 - osha: the OSHA packs ship the vocabulary their corpus is written in - HAZWOPER, retrained, LOTO,
   HazCom and more (#13 (https://github.com/evomedia-net/evo.packs/pull/13))
@@ -27,17 +27,19 @@ Fixed
   (https://github.com/evomedia-net/evo.packs/pull/8))
 
 Documentation
--------------
+~~~~~~~~~~~~~
 
+- changelog: the fleet format, evo.polaris's with no date on version headings; the .txt twins
+  underline a third-level heading with ~ (#15 (https://github.com/evomedia-net/evo.packs/pull/15))
 - sign: publish the release signing key's public half, so a deployment knows what to pin (#11
   (https://github.com/evomedia-net/evo.packs/pull/11))
 - a pack is not a regulatory format (#6 (https://github.com/evomedia-net/evo.packs/pull/6))
 
-v0.0.0.1.1 - 2026-09-16
------------------------
+v0.0.0.1.1
+----------
 
 Fixed
------
+~~~~~
 
 - specs: EPA member packs are named for their topic, not the bundle (#4
   (https://github.com/evomedia-net/evo.packs/pull/4))
@@ -45,17 +47,17 @@ Fixed
   (https://github.com/evomedia-net/evo.packs/pull/3))
 
 Maintenance
------------
+~~~~~~~~~~~
 
 - MIT licence, and say what it does not cover (#2
   (https://github.com/evomedia-net/evo.packs/pull/2))
 - ragf: add 18 corpus retrieval smoke-test cases (#1
   (https://github.com/evomedia-net/evo.packs/pull/1))
 
-v0.0.0.1.0 - 2026-09-11
------------------------
+v0.0.0.1.0
+----------
 
 Added
------
+~~~~~
 
 - corpus pipeline, pack builder, catalog, and freshness checker

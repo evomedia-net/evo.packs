@@ -20,10 +20,11 @@ and the release moves them under its version.
 
 ### Documentation
 
+- **changelog:** the fleet format, evo.polaris's with no date on version headings; the .txt twins underline a third-level heading with ~ ([#15](https://github.com/evomedia-net/evo.packs/pull/15))
 - **sign:** publish the release signing key's public half, so a deployment knows what to pin ([#11](https://github.com/evomedia-net/evo.packs/pull/11))
 - a pack is not a regulatory format ([#6](https://github.com/evomedia-net/evo.packs/pull/6))
 
-## v0.0.0.1.1 - 2026-09-16
+## v0.0.0.1.1
 
 ### Fixed
 
@@ -35,7 +36,7 @@ and the release moves them under its version.
 - MIT licence, and say what it does not cover ([#2](https://github.com/evomedia-net/evo.packs/pull/2))
 - **ragf:** add 18 corpus retrieval smoke-test cases ([#1](https://github.com/evomedia-net/evo.packs/pull/1))
 
-## v0.0.0.1.0 - 2026-09-11
+## v0.0.0.1.0
 
 ### Added
 
