@@ -20,6 +20,7 @@ and the release moves them under its version.
 
 ### Documentation
 
+- **paths:** the suite fails any document, twin included, that names a path on one workstation - a pack is built on one machine and installed on another, so a build-machine path means nothing to the server that reads the notes ([#16](https://github.com/evomedia-net/evo.packs/pull/16))
 - **changelog:** the fleet format, evo.polaris's with no date on version headings; the .txt twins underline a third-level heading with ~ ([#15](https://github.com/evomedia-net/evo.packs/pull/15))
 - **sign:** publish the release signing key's public half, so a deployment knows what to pin ([#11](https://github.com/evomedia-net/evo.packs/pull/11))
 - a pack is not a regulatory format ([#6](https://github.com/evomedia-net/evo.packs/pull/6))
